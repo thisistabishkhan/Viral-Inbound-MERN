@@ -1,0 +1,6 @@
+@echo off
+echo Stopping any running Node.js processes...
+taskkill /F /IM node.exe /T
+echo.
+echo Restarting Application...
+call start-app.bat

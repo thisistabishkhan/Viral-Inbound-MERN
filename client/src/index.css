@@ -2996,7 +2996,6 @@ section {
 .blog-post {
     max-width: 800px;
     margin: 0 auto;
-    padding-bottom: var(--spacing-xl);
 }
 
 .blog-header {
@@ -3230,4 +3229,142 @@ section {
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
     border: 1px solid #fecaca;
+}
+
+/* ============================================
+   Single Blog Page
+   ============================================ */
+.single-blog-page {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-xl);
+    min-height: 80vh;
+}
+
+.blog-post {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.blog-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.blog-tag {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.blog-date {
+    font-size: var(--font-size-base);
+    color: var(--text-tertiary);
+}
+
+.blog-author-date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-tertiary);
+    font-size: var(--font-size-base);
+    margin-top: var(--spacing-sm);
+}
+
+.blog-author {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.blog-separator {
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+
+.blog-featured-image {
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    max-height: 400px;
+    /* Constrain height */
+    width: 100%;
+}
+
+.blog-featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.blog-content {
+    max-width: 800px;
+    /* Constrain reading width */
+    margin: 0 auto;
+    font-size: var(--font-size-lg);
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+.blog-content p {
+    margin-bottom: var(--spacing-md);
+}
+
+.blog-content h2 {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+}
+
+.blog-content h3 {
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+}
+
+.blog-content ul,
+.blog-content ol {
+    margin-bottom: var(--spacing-md);
+    padding-left: var(--spacing-md);
+}
+
+.blog-content li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.blog-footer {
+    max-width: 800px;
+    margin: var(--spacing-xl) auto 0;
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    /* Center the back button */
+}
+
+/* ============================================
+   React Quill Overrides
+   ============================================ */
+.ql-container {
+    min-height: 300px;
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+}
+
+.ql-editor {
+    min-height: 300px;
 }

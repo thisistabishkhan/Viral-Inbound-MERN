@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBlogs, createBlog, updateBlog, deleteBlog } from '../../api';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const BlogManager = () => {
     const [blogs, setBlogs] = useState([]);
@@ -159,14 +161,12 @@ const BlogManager = () => {
                     </div>
 
                     <div className="form-group">
-                        <label>Content (HTML supported)</label>
-                        <textarea
+                        <label>Content</label>
+                        <ReactQuill
+                            theme="snow"
                             value={formData.content}
-                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                            required
-                            rows="10"
-                        ></textarea>
-                        <small>You can use basic HTML tags like &lt;p&gt;, &lt;h2&gt;, &lt;ul&gt;, etc.</small>
+                            onChange={(content) => setFormData({ ...formData, content })}
+                        />
                     </div>
 
                     <div className="form-actions">

@@ -55,10 +55,13 @@ const SingleBlog = () => {
                                 {blog.tags && blog.tags.map(tag => (
                                     <span key={tag} className="blog-tag">{tag}</span>
                                 ))}
-                                <span className="blog-date">{new Date(blog.date).toLocaleDateString()}</span>
                             </div>
                             <h1 className="blog-title">{blog.title}</h1>
-                            {blog.author && <p className="blog-author">By {blog.author}</p>}
+                            <div className="blog-author-date">
+                                {blog.author && <span className="blog-author">By {blog.author}</span>}
+                                {blog.author && <span className="blog-separator"> • </span>}
+                                <span className="blog-date">{new Date(blog.date).toLocaleDateString()}</span>
+                            </div>
                         </header>
 
                         {blog.imageUrl && (

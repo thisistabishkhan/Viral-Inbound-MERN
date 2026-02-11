@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchBlogs, createBlog, updateBlog, deleteBlog } from '../../api';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import BlogBuilder from './builder/BlogBuilder';
 
 const BlogManager = () => {
     const [blogs, setBlogs] = useState([]);
@@ -162,10 +161,10 @@ const BlogManager = () => {
 
                     <div className="form-group">
                         <label>Content</label>
-                        <ReactQuill
-                            theme="snow"
-                            value={formData.content}
-                            onChange={(content) => setFormData({ ...formData, content })}
+                        <BlogBuilder
+                            key={currentId || 'new'}
+                            initialContent={formData.content}
+                            onChange={(content) => setFormData(prev => ({ ...prev, content }))}
                         />
                     </div>
 

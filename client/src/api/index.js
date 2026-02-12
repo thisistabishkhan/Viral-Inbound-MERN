@@ -9,6 +9,7 @@ const API = axios.create({
 
 // Services
 export const fetchServices = () => API.get('/services');
+export const fetchService = (id) => API.get(`/services/${id}`);
 export const createService = (newService) => API.post('/services', newService);
 export const updateService = (id, updatedService) => API.patch(`/services/${id}`, updatedService);
 export const deleteService = (id) => API.delete(`/services/${id}`);

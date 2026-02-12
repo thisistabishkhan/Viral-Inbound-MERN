@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 
-const FAQ = () => {
+const FAQ = ({ items }) => {
     const [activeIndex, setActiveIndex] = useState(null);
 
     const toggleFAQ = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
 
-    const faqData = [
+    const defaultFaqData = [
         {
             question: "Do you work with startups and established businesses?",
             answer: "Yes. We work with startups, SMEs, and growing brands looking to scale sustainably."
@@ -69,6 +69,8 @@ const FAQ = () => {
             answer: "Yes, as Mumbai's best SEO company, we offer comprehensive local SEO services. Our local SEO approach includes Google Business Profile optimization and management, local keyword research and optimization for Mumbai markets, local citation building and consistency management, local link building strategies, review management and reputation optimization, local content creation, and local schema markup implementation. We help Mumbai businesses improve their visibility in local search results, appear in Google Maps, and attract customers in Mumbai and surrounding areas. This is particularly effective for businesses with physical locations in Mumbai or those serving the Mumbai metropolitan region."
         }
     ];
+
+    const faqData = items || defaultFaqData;
 
     return (
         <section class="faq">

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const Stats = () => {
+const Stats = ({ stats }) => {
     const sectionRef = useRef(null);
 
     useEffect(() => {
@@ -53,26 +53,25 @@ const Stats = () => {
         }, stepTime);
     };
 
+    const defaultStats = [
+        { number: "250", suffix: "+", label: "Clients Served" },
+        { number: "6", suffix: "+", label: "Years Experience" },
+        { number: "350", suffix: "+", label: "Projects Delivered" },
+        { number: "650", suffix: "%", label: "Avg. Traffic Growth" }
+    ];
+
+    const displayStats = stats || defaultStats;
+
     return (
-        <section class="stats" ref={sectionRef}>
-            <div class="container">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="250" data-suffix="+">0+</div>
-                        <div class="stat-label">Clients Served</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="6" data-suffix="+">0+</div>
-                        <div class="stat-label">Years Experience</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="350" data-suffix="+">0+</div>
-                        <div class="stat-label">Projects Delivered</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-target="650" data-suffix="%">0%</div>
-                        <div class="stat-label">Avg. Traffic Growth</div>
-                    </div>
+        <section className="stats" ref={sectionRef}>
+            <div className="container">
+                <div className="stats-grid">
+                    {displayStats.map((stat, index) => (
+                        <div key={index} className="stat-item">
+                            <div className="stat-number" data-target={stat.number} data-suffix={stat.suffix}>0{stat.suffix}</div>
+                            <div className="stat-label">{stat.label}</div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

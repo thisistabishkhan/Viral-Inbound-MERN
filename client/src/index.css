@@ -3541,3 +3541,62 @@ section {
     background-color: #ffffff;
     z-index: 1000;
 }
+
+/* ============================================
+   Single Service Page Styles
+   ============================================ */
+
+.single-service-page {
+    /* Base styles if needed */
+}
+
+/* Service About Section */
+.service-about {
+    position: relative;
+    z-index: 1;
+}
+
+.service-about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+@media (max-width: 991px) {
+    .service-about-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .service-about-media {
+        order: -1;
+        /* Image on top on mobile */
+    }
+}
+
+.service-about-media img,
+.service-about-media svg {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+}
+
+.service-long-description p {
+    margin-bottom: 1.5rem;
+    color: var(--text-tertiary);
+}
+
+/* Hero Badges */
+.hero-badges {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.hero-subtitle-badge {
+    background: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(5px);
+}

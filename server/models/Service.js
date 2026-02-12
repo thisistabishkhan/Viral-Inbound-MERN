@@ -10,7 +10,38 @@ const ServiceSchema = new mongoose.Schema({
             name: { type: String },
             description: { type: String }
         }
-    ]
+    ],
+    // New Fields for Rich Layout
+    subHeading: { type: String },
+    longDescription: { type: String }, // For "About This Service"
+    stats: [
+        {
+            number: { type: String },
+            suffix: { type: String },
+            label: { type: String }
+        }
+    ],
+    whyChooseUs: [
+        {
+            title: { type: String },
+            description: { type: String },
+            icon: { type: String } // Optional: specific icon for this point
+        }
+    ],
+    expertise: [
+        {
+            title: { type: String },
+            description: { type: String },
+            icon: { type: String } // Optional
+        }
+    ],
+    faqs: [
+        {
+            question: { type: String },
+            answer: { type: String }
+        }
+    ],
+    ctaText: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Service', ServiceSchema);

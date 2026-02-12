@@ -17,10 +17,10 @@ const BlockWrapper = ({ block, onChange, onDelete }) => {
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging || block.isPlaceholder ? 0.5 : 1, // Handle placeholder opacity
         marginBottom: '1rem',
-        backgroundColor: '#fff',
-        border: '1px solid #e2e8f0',
+        backgroundColor: block.isPlaceholder ? '#f0f9ff' : '#fff', // Light blue background for placeholder
+        border: block.isPlaceholder ? '2px dashed #3b82f6' : '1px solid #e2e8f0', // Dashed blue border for placeholder
         borderRadius: '0.5rem',
         overflow: 'hidden',
     };

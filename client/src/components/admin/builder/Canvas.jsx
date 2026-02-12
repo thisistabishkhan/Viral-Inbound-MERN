@@ -20,7 +20,7 @@ const Canvas = ({ blocks, onChange, onDelete }) => {
                 border: '1px solid #cbd5e1'
             }}
         >
-            <SortableContext items={blocks} strategy={verticalListSortingStrategy}>
+            <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
                 {blocks.map((block) => (
                     <BlockWrapper
                         key={block.id}

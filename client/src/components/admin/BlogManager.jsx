@@ -37,9 +37,18 @@ const BlogManager = () => {
         e.preventDefault();
         setLoading(true);
 
-        // Process tags from comma-separated string to array
+        // Generate slug if empty
+        let slug = formData.slug.trim();
+        if (!slug) {
+            slug = formData.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)+/g, '');
+        }
+
         const blogData = {
             ...formData,
+            slug,
             tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
         };
 

@@ -3,27 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Type, Image as ImageIcon, Quote, Heading } from 'lucide-react';
 
-export const LayerItem = ({ id, type, active }) => {
-    const {
-        attributes,
-        listeners,
-        setNodeRef,
-        transform,
-        transition,
-        isDragging
-    } = useSortable({ id: id });
-
-    const style = {
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
-        // Active state styling
-        border: active ? '1px solid #3b82f6' : '1px solid transparent',
-        backgroundColor: active ? '#eff6ff' : 'white',
-        borderRadius: '0.25rem',
-        marginBottom: '0.5rem',
-    };
-
+export const LayerItemContent = ({ type, active, style, listeners, attributes, setNodeRef, isOverlay }) => {
     const getIcon = () => {
         switch (type) {
             case 'heading': return <Heading size={14} />;
@@ -34,10 +14,19 @@ export const LayerItem = ({ id, type, active }) => {
         }
     };
 
+    const finalStyle = {
+        ...style,
+        // Active state styling
+        border: active ? '1px solid #3b82f6' : '1px solid transparent',
+        backgroundColor: active ? '#eff6ff' : 'white',
+        borderRadius: '0.25rem',
+        marginBottom: '0.5rem',
+    };
+
     return (
         <div
             ref={setNodeRef}
-            style={style}
+            style={finalStyle}
             {...attributes}
             {...listeners}
             className="layer-item"
@@ -48,10 +37,11 @@ export const LayerItem = ({ id, type, active }) => {
                 padding: '0.5rem',
                 border: '1px solid #e2e8f0',
                 borderRadius: '0.25rem',
-                cursor: 'grab',
+                cursor: isOverlay ? 'grabbing' : 'grab',
                 backgroundColor: '#fff',
                 width: '100%',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                pointerEvents: isOverlay ? 'none' : 'auto'
             }}>
                 <GripVertical size={14} color="#94a3b8" style={{ marginRight: '0.5rem', flexShrink: 0 }} />
                 <span style={{ color: '#64748b', marginRight: '0.5rem', display: 'flex', flexShrink: 0 }}>{getIcon()}</span>
@@ -68,6 +58,34 @@ export const LayerItem = ({ id, type, active }) => {
                 </span>
             </div>
         </div>
+    );
+};
+
+export const LayerItem = ({ id, type, active }) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({ id: id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <LayerItemContent
+            type={type}
+            active={active}
+            style={style}
+            listeners={listeners}
+            attributes={attributes}
+            setNodeRef={setNodeRef}
+        />
     );
 };
 

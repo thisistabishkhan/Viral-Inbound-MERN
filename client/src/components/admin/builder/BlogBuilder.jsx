@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
     DndContext,
     closestCenter,
@@ -18,7 +19,7 @@ import {
 import { GripVertical } from 'lucide-react';
 import Toolbox from './Toolbox';
 import Canvas from './Canvas';
-import LayersPanel, { LayerItem } from './LayersPanel';
+import LayersPanel, { LayerItem, LayerItemContent } from './LayersPanel';
 import { HeadingBlock, TextBlock, ImageBlock, QuoteBlock } from './Blocks';
 
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -61,11 +62,13 @@ const BlogBuilder = ({ initialContent, onChange }) => {
                 setBlocks([{ id: generateId(), type: 'text', data: { content: initialContent } }]);
             }
         }
-    }, []);
+    }, []); // Run only on mount (key change handles reset)
 
     useEffect(() => {
         const htmlContent = serializeBlocks(blocks);
-        onChange(htmlContent);
+        // Debounce or check if really changed to avoid loops if needed, 
+        // but for now direct call is fine as long as parent doesn't recreate initialContent
+        if (onChange) onChange(htmlContent);
     }, [blocks, onChange]);
 
     const serializeBlocks = (currentBlocks) => {
@@ -108,42 +111,99 @@ const BlogBuilder = ({ initialContent, onChange }) => {
         setBlocks((items) => items.filter(item => item.id !== id));
     };
 
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-        setActiveId(null);
+    const handleDragStart = (event) => {
+        setActiveId(event.active.id);
+    };
 
+    const handleDragOver = (event) => {
+        const { active, over } = event;
         if (!over) return;
 
-        // Handle dropping a Toolbox item
+        // 1. If we are dragging a Toolbox item over the Canvas/Sortable list
         if (active.data.current?.isToolboxItem) {
-            const type = active.data.current.type;
-            const newBlock = {
-                id: generateId(),
-                type,
-                data: {}
-            };
+            const overId = over.id;
+
+            // If over the canvas container itself, we might want to append
+            // But usually DndKit sortable targets specific items.
 
             setBlocks((items) => {
-                // If dropped over a layer item, we need to handle that too
-                const overIdClean = over.id.toString().replace('layer-', '');
+                const activeType = active.data.current.type;
+                // Check if we already have a placeholder
+                const placeholderIndex = items.findIndex(item => item.id === 'placeholder');
+
+                // Calculate where it should go
+                const overIdClean = overId.toString().replace('layer-', '');
                 const overIndex = items.findIndex((item) => item.id === overIdClean);
 
                 let newIndex;
                 if (overIndex >= 0) {
                     newIndex = overIndex;
+                    // If moving down (placeholder is before over), we generally want to go after?
+                    // But active isn't in list yet essentially (except as placeholder).
+                    // DndKit's sortable strategy handles "move to index". 
+                    // We just need to put the placeholder AT the overIndex, and SortableContext shifts others.
+
+                    // Enhancement: if below center, maybe +1? 
+                    // But standard replacement is fine.
                 } else {
                     newIndex = items.length;
                 }
 
-                const newItems = [...items];
-                newItems.splice(newIndex, 0, newBlock);
-                return newItems;
+                // If we already have a placeholder, just move it
+                if (placeholderIndex !== -1) {
+                    if (placeholderIndex === newIndex) return items; // no change
+                    return arrayMove(items, placeholderIndex, newIndex);
+                } else {
+                    // Create new placeholder
+                    const newBlock = {
+                        id: 'placeholder',
+                        type: activeType,
+                        data: {},
+                        isPlaceholder: true // Flag to style it differently/ghostly
+                    };
+                    const newItems = [...items];
+                    newItems.splice(newIndex, 0, newBlock);
+                    return newItems;
+                }
+            });
+        }
+    };
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        setActiveId(null);
+
+        // Allow dropping toolbox item
+        if (active.data.current?.isToolboxItem) {
+            setBlocks((items) => {
+                // Find placeholder and replace with real item
+                const placeholderIndex = items.findIndex(item => item.id === 'placeholder');
+
+                // If we dropped outside valid area (no over), remove placeholder
+                if (!over) {
+                    return items.filter(item => item.id !== 'placeholder');
+                }
+
+                if (placeholderIndex !== -1) {
+                    const type = active.data.current.type;
+                    const newBlock = {
+                        id: generateId(), // Real ID
+                        type,
+                        data: {}
+                    };
+                    const newItems = [...items];
+                    newItems[placeholderIndex] = newBlock;
+                    return newItems;
+                } else {
+                    // Fallback if no placeholder existed (weird timing?)
+                    return items;
+                }
             });
             return;
         }
 
-        // Handle sorting existing blocks (Canvas or LayerPanel)
-        if (active.id !== over.id) {
+        // Handle sorting existing blocks
+        if (over && active.id !== over.id) {
             setBlocks((items) => {
                 const activeIdClean = active.id.toString().replace('layer-', '');
                 const overIdClean = over.id.toString().replace('layer-', '');
@@ -171,15 +231,22 @@ const BlogBuilder = ({ initialContent, onChange }) => {
         if (!id) return null;
         const isLayer = id.toString().startsWith('layer-');
         const cleanId = id.toString().replace('layer-', '');
-        const block = blocks.find(b => b.id === cleanId);
+
+        let block;
+        if (id.toString().startsWith('toolbox-')) {
+            // It's a toolbox item, we don't look it up in blocks
+            return null; // Handled below in DragOverlay children
+        } else {
+            block = blocks.find(b => b.id === cleanId);
+        }
 
         if (!block) return null;
 
         if (isLayer) {
-            return <LayerItem id={id} type={block.type} active={true} />;
+            return <LayerItemContent type={block.type} active={true} isOverlay={true} />;
         }
 
-        // For canvas dragging, we show a simplified version of the block wrapper
+        // For canvas dragging
         const renderPreviewContent = () => {
             const noop = () => { };
             switch (block.type) {
@@ -194,12 +261,13 @@ const BlogBuilder = ({ initialContent, onChange }) => {
         return (
             <div className="builder-block-wrapper" style={{
                 backgroundColor: '#fff',
-                border: '1px solid #e2e8f0',
+                border: '1px solid #3b82f6', // distinct usage
                 borderRadius: '0.5rem',
                 overflow: 'hidden',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
                 width: '100%',
-                maxWidth: '600px' // Limit width
+                maxWidth: '600px',
+                pointerEvents: 'none' // CRITICAL: prevent overlay from stealing events
             }}>
                 <div className="block-header" style={{
                     display: 'flex',
@@ -207,7 +275,6 @@ const BlogBuilder = ({ initialContent, onChange }) => {
                     padding: '0.5rem',
                     backgroundColor: '#f8fafc',
                     borderBottom: '1px solid #e2e8f0',
-                    cursor: 'grabbing'
                 }}>
                     <div style={{ marginRight: '0.5rem', display: 'flex', alignItems: 'center' }}>
                         <GripVertical size={16} color="#94a3b8" />
@@ -227,14 +294,15 @@ const BlogBuilder = ({ initialContent, onChange }) => {
         <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
-            onDragStart={(event) => setActiveId(event.active.id)}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver} // CRITICAL: Added this
             onDragEnd={handleDragEnd}
         >
             <div className="blog-builder" style={{
                 display: 'grid',
-                gridTemplateColumns: '250px 1fr 250px', // Added 3rd column for Layers
+                gridTemplateColumns: '250px 1fr 250px',
                 gap: '2rem',
-                height: 'calc(100vh - 100px)', // Constrain height for scrolling
+                height: 'calc(100vh - 100px)',
                 overflow: 'hidden'
             }}>
                 <div className="builder-sidebar">
@@ -257,22 +325,27 @@ const BlogBuilder = ({ initialContent, onChange }) => {
                 </div>
             </div>
 
-            <DragOverlay dropAnimation={dropAnimation}>
-                {activeId ? (
-                    activeId.toString().startsWith('toolbox-') ? (
-                        <div style={{
-                            padding: '1rem',
-                            backgroundColor: '#fff',
-                            border: '1px solid #e2e8f0',
-                            borderRadius: '0.5rem',
-                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                            width: '200px'
-                        }}>
-                            {activeId.replace('toolbox-', '').toUpperCase()}
-                        </div>
-                    ) : renderDragPreview(activeId)
-                ) : null}
-            </DragOverlay>
+            {createPortal(
+                <DragOverlay dropAnimation={dropAnimation} style={{ pointerEvents: 'none', cursor: 'grabbing' }}>
+                    {activeId ? (
+                        activeId.toString().startsWith('toolbox-') ? (
+                            <div style={{
+                                padding: '1rem',
+                                backgroundColor: '#fff',
+                                border: '1px solid #3b82f6',
+                                borderRadius: '0.5rem',
+                                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                                width: '200px',
+                                cursor: 'grabbing',
+                                pointerEvents: 'none'
+                            }}>
+                                {activeId.replace('toolbox-', '').toUpperCase()}
+                            </div>
+                        ) : renderDragPreview(activeId)
+                    ) : null}
+                </DragOverlay>,
+                document.body
+            )}
         </DndContext>
     );
 };

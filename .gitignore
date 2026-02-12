@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Database
+server/data/
+*.lock
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+server/test_mongo.js
+server/test_blog_post.js
+server/cleanup_test.js
+.trigger_restart

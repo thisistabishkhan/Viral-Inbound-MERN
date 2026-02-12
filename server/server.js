@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/api/services', require('./routes/services'));
 app.use('/api/portfolio', require('./routes/portfolio'));
 app.use('/api/blogs', require('./routes/blogs'));
+app.use('/api/leads', require('./routes/leads'));
 
 app.get('/', (req, res) => {
     res.send('Viral Inbound API is running');

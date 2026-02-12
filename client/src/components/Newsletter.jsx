@@ -1,76 +1,79 @@
 import React from 'react';
+import useFormSubmit from '../hooks/useFormSubmit';
 
 const Newsletter = () => {
-    const handleSubmit = (e) => {
+    const { loading, error, success, responseMessage, submitForm } = useFormSubmit();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        alert("Newsletter subscription submitted! (Simulation)");
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        await submitForm(data, 'newsletterForm');
     };
 
     return (
-        <section class="newsletter-section">
-            <div class="container">
-                <div class="newsletter-content">
-                    <h2 class="section-title">Stay Updated with Growth Insights</h2>
-                    <p class="section-subtitle">Get the latest SEO strategies, web design tips, and growth marketing insights delivered to your inbox.</p>
-                    <form class="newsletter-form" id="newsletterForm" novalidate onSubmit={handleSubmit}>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <input type="text" id="newsletterFirstName" name="firstName" placeholder="First Name" required />
+        <section className="newsletter-section" style={{ padding: 'var(--spacing-lg) 0' }}>
+            <div className="container">
+                <div className="newsletter-content" style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+                    <h2 className="section-title" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Join Our Growth Newsletter</h2>
+                    <p className="section-subtitle" style={{ fontSize: '1.125rem', color: '#4a4a4a', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem' }}>
+                        Get the latest SEO strategies, design trends, and digital marketing insights delivered straight to your inbox. No spam, just value.
+                    </p>
+
+                    <div className="newsletter-card" style={{
+                        background: '#ffffff',
+                        borderRadius: '24px',
+                        marginTop: '2rem'
+                    }}>
+                        <form className="newsletter-form" id="newsletterForm" noValidate onSubmit={handleSubmit} style={{
+                            display: 'flex',
+                            gap: '1rem',
+                            margin: '0 auto',
+                            alignItems: 'center'
+                        }}>
+                            <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                <input
+                                    type="email"
+                                    id="newsletterEmail"
+                                    name="email"
+                                    placeholder="Enter your email"
+                                    required
+                                    style={{
+                                        width: '100%',
+                                        padding: '1rem 1.5rem',
+                                        borderRadius: '12px',
+                                        border: '1px solid #e5e5e5',
+                                        background: '#fff',
+                                        fontSize: '1rem',
+                                        color: '#1a1a1a',
+                                        outline: 'none'
+                                    }}
+                                />
                             </div>
-                            <div class="form-group">
-                                <input type="text" id="newsletterLastName" name="lastName" placeholder="Last Name" required />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="newsletterEmail" name="email" placeholder="Your email" required />
-                        </div>
-                        <div class="form-group">
-                            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'stretch' }}>
-                                <select id="newsletterCountryCode" name="countryCode" style={{ width: '90px', minWidth: '90px', padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-sm)', flexShrink: 0 }}>
-                                    <option value="+91">+91</option>
-                                    <option value="+1">+1</option>
-                                    <option value="+44">+44</option>
-                                    <option value="+61">+61</option>
-                                    <option value="+971">+971</option>
-                                    <option value="+65">+65</option>
-                                    <option value="+86">+86</option>
-                                    <option value="+81">+81</option>
-                                    <option value="+49">+49</option>
-                                    <option value="+33">+33</option>
-                                    <option value="+34">+34</option>
-                                    <option value="+39">+39</option>
-                                    <option value="+31">+31</option>
-                                    <option value="+46">+46</option>
-                                    <option value="+47">+47</option>
-                                    <option value="+41">+41</option>
-                                    <option value="+32">+32</option>
-                                    <option value="+351">+351</option>
-                                    <option value="+353">+353</option>
-                                    <option value="+358">+358</option>
-                                    <option value="+45">+45</option>
-                                    <option value="+48">+48</option>
-                                    <option value="+420">+420</option>
-                                    <option value="+43">+43</option>
-                                    <option value="+30">+30</option>
-                                    <option value="+27">+27</option>
-                                    <option value="+55">+55</option>
-                                    <option value="+52">+52</option>
-                                    <option value="+54">+54</option>
-                                    <option value="+82">+82</option>
-                                    <option value="+60">+60</option>
-                                    <option value="+66">+66</option>
-                                    <option value="+62">+62</option>
-                                    <option value="+63">+63</option>
-                                    <option value="+84">+84</option>
-                                    <option value="+64">+64</option>
-                                </select>
-                                <input type="tel" id="newsletterPhone" name="phone" placeholder="Phone Number" required style={{ flex: 1, minWidth: 0, padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-base)' }} />
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-large">Subscribe</button>
-                        <div class="form-message" id="newsletterFormMessage"></div>
-                    </form>
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={loading}
+                                style={{
+                                    padding: '1rem 2rem',
+                                    borderRadius: '12px',
+                                    background: '#000000',
+                                    color: '#ffffff',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: '500',
+                                    whiteSpace: 'nowrap',
+                                    height: '54px' // Match input height roughly
+                                }}
+                            >
+                                {loading ? 'Subscribing...' : 'Subscribe'}
+                            </button>
+                        </form>
+
+                        {error && <div className="form-message error" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+                        {success && <div className="form-message success" style={{ color: 'green', marginTop: '1rem' }}>{responseMessage}</div>}
+                    </div>
                 </div>
             </div>
         </section>

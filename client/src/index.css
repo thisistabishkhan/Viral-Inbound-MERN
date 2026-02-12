@@ -988,24 +988,35 @@ header.header.scrolled {
    Why Choose Viral Inbound Section
    ============================================ */
 .why-choose-carousel {
-    display: flex;
-    gap: var(--spacing-md);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    padding-bottom: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    width: 100%;
+    overflow: hidden;
     position: relative;
     mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    padding: var(--spacing-md) 0;
 }
 
-.why-choose-carousel::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
+.why-choose-track {
+    display: flex;
+    gap: var(--spacing-md);
+    width: max-content;
+    will-change: transform;
+    animation: scroll-why-choose 40s linear infinite;
+}
+
+.why-choose-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-why-choose {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* 6 items * (380px width + 2rem gap) = 6 * (380 + 32) = 2472px */
+        transform: translateX(calc(-1 * (380px * 6 + 2rem * 6)));
+    }
 }
 
 .why-choose-item {
@@ -1547,18 +1558,35 @@ section {
    Projects Section
    ============================================ */
 .projects-grid {
-    display: flex;
-    gap: var(--spacing-md);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    padding-bottom: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    width: 100%;
+    overflow: hidden;
     position: relative;
     mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    padding: var(--spacing-md) 0;
+}
+
+.projects-track {
+    display: flex;
+    gap: var(--spacing-md);
+    width: max-content;
+    will-change: transform;
+    animation: scroll-projects 45s linear infinite;
+}
+
+.projects-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-projects {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* 7 items * (380px width + 2rem gap) = 7 * (380 + 32) = 2884px */
+        transform: translateX(calc(-1 * (380px * 7 + 2rem * 7)));
+    }
 }
 
 .projects-grid::-webkit-scrollbar {
@@ -1693,18 +1721,35 @@ section {
 }
 
 .testimonials-grid {
-    display: flex;
-    gap: var(--spacing-lg);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    padding-bottom: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    width: 100%;
+    overflow: hidden;
     position: relative;
     mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    padding: var(--spacing-md) 0;
+}
+
+.testimonials-track {
+    display: flex;
+    gap: var(--spacing-lg);
+    width: max-content;
+    will-change: transform;
+    animation: scroll-testimonials 50s linear infinite;
+}
+
+.testimonials-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-testimonials {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* 8 items * (380px width + 4rem gap) = 8 * (380 + 64) = 3552px */
+        transform: translateX(calc(-1 * (380px * 8 + 4rem * 8)));
+    }
 }
 
 .testimonials-grid::-webkit-scrollbar {
@@ -1794,18 +1839,35 @@ section {
    Insights Section
    ============================================ */
 .insights-grid {
-    display: flex;
-    gap: var(--spacing-md);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-behavior: smooth;
-    padding-bottom: 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    width: 100%;
+    overflow: hidden;
     position: relative;
     mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    padding: var(--spacing-md) 0;
+}
+
+.insights-track {
+    display: flex;
+    gap: var(--spacing-md);
+    width: max-content;
+    will-change: transform;
+    animation: scroll-insights 50s linear infinite;
+}
+
+.insights-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-insights {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* 8 items * (380px width + 2rem gap) = 8 * (380 + 32) = 3296px */
+        transform: translateX(calc(-1 * (380px * 8 + 2rem * 8)));
+    }
 }
 
 /* Specific Grid for Full Blog Page */

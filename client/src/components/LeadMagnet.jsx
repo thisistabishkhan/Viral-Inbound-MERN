@@ -1,31 +1,41 @@
 import React from 'react';
+import useFormSubmit from '../hooks/useFormSubmit';
 
 const LeadMagnet = () => {
-    const handleSubmit = (e) => {
+    const { loading, error, success, responseMessage, submitForm } = useFormSubmit();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        alert("Lead Magnet form submitted! (Simulation)");
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Combine phone number
+        if (data.phone) {
+            data.fullPhone = `${data.countryCode} ${data.phone}`;
+        }
+
+        await submitForm(data, 'leadMagnetForm');
     };
 
     return (
-        <section class="lead-magnet">
-            <div class="container">
-                <div class="lead-magnet-content">
+        <section className="lead-magnet">
+            <div className="container">
+                <div className="lead-magnet-content">
                     <h2>Get the AI-Led Digital Growth Guide</h2>
                     <p>Learn how modern businesses are using SEO, design, and performance marketing together to drive predictable growth.</p>
-                    <form class="lead-magnet-form" id="leadMagnetForm" novalidate onSubmit={handleSubmit}>
-                        <div class="form-row">
-                            <div class="form-group">
+                    <form className="lead-magnet-form" id="leadMagnetForm" noValidate onSubmit={handleSubmit}>
+                        <div className="form-row">
+                            <div className="form-group">
                                 <input type="text" id="leadFirstName" name="firstName" placeholder="First Name" required />
                             </div>
-                            <div class="form-group">
+                            <div className="form-group">
                                 <input type="text" id="leadLastName" name="lastName" placeholder="Last Name" required />
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <input type="email" id="leadEmail" name="email" placeholder="Enter your email" required />
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'stretch' }}>
                                 <select id="leadCountryCode" name="countryCode" style={{ width: '90px', minWidth: '90px', padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-sm)', flexShrink: 0 }}>
                                     <option value="+91">+91</option>
@@ -68,8 +78,11 @@ const LeadMagnet = () => {
                                 <input type="tel" id="leadPhone" name="phone" placeholder="Phone Number" required style={{ flex: 1, minWidth: 0, padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-base)' }} />
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-large">Download the Free Guide</button>
-                        <div class="form-message" id="leadMagnetFormMessage"></div>
+                        <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+                            {loading ? 'Processing...' : 'Download the Free Guide'}
+                        </button>
+                        {error && <div className="form-message error" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+                        {success && <div className="form-message success" style={{ color: 'green', marginTop: '1rem' }}>{responseMessage}</div>}
                     </form>
                 </div>
             </div>

@@ -1,33 +1,43 @@
 import React from 'react';
+import useFormSubmit from '../hooks/useFormSubmit';
 
 const ContactCTA = () => {
-    const handleSubmit = (e) => {
+    const { loading, error, success, responseMessage, submitForm } = useFormSubmit();
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        alert("Contact form submitted! (Simulation)");
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Combine phone number
+        if (data.phone) {
+            data.fullPhone = `${data.countryCode} ${data.phone}`;
+        }
+
+        await submitForm(data, 'contactForm');
     };
 
     return (
-        <section id="contact" class="final-cta">
-            <div class="container">
-                <h2 class="section-title">Get Your Free SEO Audit</h2>
-                <p class="section-subtitle">Get a free, comprehensive SEO audit that reveals exactly what's preventing your website from ranking higher and converting more visitors. We'll analyze your technical SEO, on-page optimization, performance metrics, and conversion opportunities. Then we'll deliver actionable recommendations within 5 to 7 business days. We help businesses across Mumbai improve their online visibility and drive real growth.</p>
-                <form class="contact-form" id="contactForm" novalidate onSubmit={handleSubmit}>
-                    <div class="form-row">
-                        <div class="form-group">
+        <section id="contact" className="final-cta">
+            <div className="container">
+                <h2 className="section-title">Get Your Free SEO Audit</h2>
+                <p className="section-subtitle">Get a free, comprehensive SEO audit that reveals exactly what's preventing your website from ranking higher and converting more visitors. We'll analyze your technical SEO, on-page optimization, performance metrics, and conversion opportunities. Then we'll deliver actionable recommendations within 5 to 7 business days. We help businesses across Mumbai improve their online visibility and drive real growth.</p>
+                <form className="contact-form" id="contactForm" noValidate onSubmit={handleSubmit}>
+                    <div className="form-row">
+                        <div className="form-group">
                             <input type="text" id="contactFirstName" name="firstName" placeholder="First Name" required />
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                             <input type="text" id="contactLastName" name="lastName" placeholder="Last Name" required />
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                         <input type="email" id="contactEmail" name="email" placeholder="Your Email" required />
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                         <input type="url" id="contactWebsite" name="website" placeholder="https://yourwebsite.com" required />
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'stretch' }}>
                             <select id="contactCountryCode" name="countryCode" style={{ width: '90px', minWidth: '90px', padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-sm)', flexShrink: 0 }}>
                                 <option value="+91">+91</option>
@@ -70,11 +80,14 @@ const ContactCTA = () => {
                             <input type="tel" id="contactPhone" name="phone" placeholder="Phone Number" required style={{ flex: 1, minWidth: 0, padding: '0.75rem', border: '1px solid rgba(0, 0, 0, 0.2)', borderRadius: 'var(--radius-sm)', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(10px)', fontSize: 'var(--font-size-base)' }} />
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                         <input type="text" id="contactCompany" name="company" placeholder="Company Name" required />
                     </div>
-                    <button type="submit" class="btn btn-primary btn-large" style={{ width: '100%' }}>Get My Free SEO Audit</button>
-                    <div class="form-message" id="contactFormMessage"></div>
+                    <button type="submit" className="btn btn-primary btn-large" style={{ width: '100%' }} disabled={loading}>
+                        {loading ? 'Sending...' : 'Get My Free SEO Audit'}
+                    </button>
+                    {error && <div className="form-message error" style={{ color: 'red', marginTop: '1rem' }}>{error}</div>}
+                    {success && <div className="form-message success" style={{ color: 'green', marginTop: '1rem' }}>{responseMessage}</div>}
                 </form>
             </div>
         </section>

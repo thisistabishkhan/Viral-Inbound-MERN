@@ -62,7 +62,7 @@ const Expertise = ({ items, title }) => {
     return (
         <section className="expertise">
             <div className="container">
-                {title || defaultTitle}
+                <h2 className="section-title">{title || defaultTitle}</h2>
                 <div className="expertise-grid">
                     {displayItems.map((item, index) => (
                         <div key={index} className="expertise-card">

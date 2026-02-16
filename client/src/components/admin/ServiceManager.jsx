@@ -6,8 +6,10 @@ const ServiceManager = () => {
     const [services, setServices] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
+        slug: '',
         description: '',
         icon: '',
+        detailImage: '',
         platforms: '',
         items: [],
         subHeading: '',
@@ -61,7 +63,9 @@ const ServiceManager = () => {
 
         const serviceData = {
             ...formData,
-            platforms: formData.platforms.split(',').map(p => p.trim()).filter(p => p !== '')
+            platforms: Array.isArray(formData.platforms)
+                ? formData.platforms
+                : (formData.platforms || '').split(',').map(p => p.trim()).filter(p => p !== '')
         };
 
         try {
@@ -75,8 +79,11 @@ const ServiceManager = () => {
             clearForm();
             loadServices();
         } catch (err) {
-            console.error(err);
-            setError('Failed to save service');
+            console.error('Full error:', err);
+            console.error('Error response:', err.response?.data);
+            const errorMsg = err.response?.data?.message || err.message || 'Failed to save service';
+            const errorDetails = err.response?.data?.details;
+            setError(errorDetails ? `${errorMsg} (${JSON.stringify(errorDetails)})` : errorMsg);
         } finally {
             setLoading(false);
         }
@@ -96,11 +103,13 @@ const ServiceManager = () => {
 
     const handleEdit = (service) => {
         setIsEditing(true);
-        setCurrentId(service._id);
+        setCurrentId(service.id);
         setFormData({
             title: service.title,
+            slug: service.slug || '',
             description: service.description,
             icon: service.icon || '',
+            detailImage: service.detailImage || '',
             platforms: service.platforms ? service.platforms.join(', ') : '',
             items: service.items || [],
             // New Fields
@@ -120,8 +129,10 @@ const ServiceManager = () => {
         setCurrentId(null);
         setFormData({
             title: '',
+            slug: '',
             description: '',
             icon: '',
+            detailImage: '',
             platforms: '',
             items: [],
             lists: [], // For compatibility if needed, but we used 'items' in the schema
@@ -153,6 +164,16 @@ const ServiceManager = () => {
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                             required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>URL Slug (e.g. branding → /services/branding)</label>
+                        <input
+                            type="text"
+                            value={formData.slug}
+                            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                            placeholder="Leave empty to generate from title"
                         />
                     </div>
 
@@ -201,186 +222,222 @@ const ServiceManager = () => {
                         onChange={(value) => setFormData({ ...formData, icon: value })}
                     />
 
+                    <MediaField
+                        label="Detail Image (About Section)"
+                        value={formData.detailImage}
+                        onChange={(value) => setFormData({ ...formData, detailImage: value })}
+                    />
+
                     {/* Stats Section */}
-                    <div className="form-section" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', borderRadius: '5px' }}>
-                        <h4 style={{ marginTop: 0 }}>Stats (4 Items Recommended)</h4>
+                    <div className="repeater-container">
+                        <h4 className="repeater-title">Stats (4 Items Recommended)</h4>
                         {formData.stats.map((stat, index) => (
-                            <div key={index} className="nested-form-item" style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
-                                <input
-                                    type="text"
-                                    placeholder="Number (e.g. 250)"
-                                    value={stat.number}
-                                    onChange={(e) => {
-                                        const newStats = [...formData.stats];
-                                        newStats[index].number = e.target.value;
-                                        setFormData({ ...formData, stats: newStats });
-                                    }}
-                                    style={{ flex: 1 }}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Suffix (e.g. + or %)"
-                                    value={stat.suffix}
-                                    onChange={(e) => {
-                                        const newStats = [...formData.stats];
-                                        newStats[index].suffix = e.target.value;
-                                        setFormData({ ...formData, stats: newStats });
-                                    }}
-                                    style={{ width: '80px' }}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Label (e.g. Clients Served)"
-                                    value={stat.label}
-                                    onChange={(e) => {
-                                        const newStats = [...formData.stats];
-                                        newStats[index].label = e.target.value;
-                                        setFormData({ ...formData, stats: newStats });
-                                    }}
-                                    style={{ flex: 2 }}
-                                />
-                                <button type="button" onClick={() => {
-                                    const newStats = formData.stats.filter((_, i) => i !== index);
-                                    setFormData({ ...formData, stats: newStats });
-                                }} className="btn btn-secondary" style={{ backgroundColor: '#ff4444', borderColor: '#ff4444', color: 'white' }}>×</button>
+                            <div key={index} className="repeater-item">
+                                <div className="repeater-row">
+                                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Number (e.g. 250)"
+                                            value={stat.number}
+                                            onChange={(e) => {
+                                                const newStats = [...formData.stats];
+                                                newStats[index].number = e.target.value;
+                                                setFormData({ ...formData, stats: newStats });
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="form-group" style={{ width: '100px', marginBottom: 0 }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Suffix"
+                                            value={stat.suffix}
+                                            onChange={(e) => {
+                                                const newStats = [...formData.stats];
+                                                newStats[index].suffix = e.target.value;
+                                                setFormData({ ...formData, stats: newStats });
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="form-group" style={{ flex: 2, marginBottom: 0 }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Label (e.g. Clients Served)"
+                                            value={stat.label}
+                                            onChange={(e) => {
+                                                const newStats = [...formData.stats];
+                                                newStats[index].label = e.target.value;
+                                                setFormData({ ...formData, stats: newStats });
+                                            }}
+                                        />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const newStats = formData.stats.filter((_, i) => i !== index);
+                                            setFormData({ ...formData, stats: newStats });
+                                        }}
+                                        className="btn-icon delete"
+                                        title="Remove Stat"
+                                    >×</button>
+                                </div>
                             </div>
                         ))}
                         <button type="button" onClick={() => setFormData({
                             ...formData,
                             stats: [...formData.stats, { number: '', suffix: '', label: '' }]
-                        })} className="btn btn-secondary">+ Add Stat</button>
+                        })} className="repeater-add-btn">+ Add Stat</button>
                     </div>
 
                     {/* FAQs Section */}
-                    <div className="form-section" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', borderRadius: '5px' }}>
-                        <h4 style={{ marginTop: 0 }}>FAQs</h4>
+                    <div className="repeater-container">
+                        <h4 className="repeater-title">FAQs</h4>
                         {formData.faqs.map((faq, index) => (
-                            <div key={index} className="nested-form-item" style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px dashed #eee' }}>
-                                <input
-                                    type="text"
-                                    placeholder="Question"
-                                    value={faq.question}
-                                    onChange={(e) => {
-                                        const newFaqs = [...formData.faqs];
-                                        newFaqs[index].question = e.target.value;
+                            <div key={index} className="repeater-item">
+                                <div className="nested-form-group">
+                                    <input
+                                        type="text"
+                                        placeholder="Question"
+                                        value={faq.question}
+                                        onChange={(e) => {
+                                            const newFaqs = [...formData.faqs];
+                                            newFaqs[index].question = e.target.value;
+                                            setFormData({ ...formData, faqs: newFaqs });
+                                        }}
+                                        className="form-control"
+                                    />
+                                </div>
+                                <div className="nested-form-group">
+                                    <textarea
+                                        placeholder="Answer"
+                                        value={faq.answer}
+                                        onChange={(e) => {
+                                            const newFaqs = [...formData.faqs];
+                                            newFaqs[index].answer = e.target.value;
+                                            setFormData({ ...formData, faqs: newFaqs });
+                                        }}
+                                        style={{ minHeight: '80px' }}
+                                    />
+                                </div>
+                                <div className="repeater-actions">
+                                    <button type="button" onClick={() => {
+                                        const newFaqs = formData.faqs.filter((_, i) => i !== index);
                                         setFormData({ ...formData, faqs: newFaqs });
-                                    }}
-                                    style={{ width: '100%', marginBottom: '5px' }}
-                                />
-                                <textarea
-                                    placeholder="Answer"
-                                    value={faq.answer}
-                                    onChange={(e) => {
-                                        const newFaqs = [...formData.faqs];
-                                        newFaqs[index].answer = e.target.value;
-                                        setFormData({ ...formData, faqs: newFaqs });
-                                    }}
-                                    style={{ width: '100%', minHeight: '60px' }}
-                                />
-                                <button type="button" onClick={() => {
-                                    const newFaqs = formData.faqs.filter((_, i) => i !== index);
-                                    setFormData({ ...formData, faqs: newFaqs });
-                                }} className="btn btn-secondary" style={{ marginTop: '5px', backgroundColor: '#ff4444', borderColor: '#ff4444', color: 'white' }}>Remove FAQ</button>
+                                    }} className="repeater-remove-btn">Remove FAQ</button>
+                                </div>
                             </div>
                         ))}
                         <button type="button" onClick={() => setFormData({
                             ...formData,
                             faqs: [...formData.faqs, { question: '', answer: '' }]
-                        })} className="btn btn-secondary">+ Add FAQ</button>
+                        })} className="repeater-add-btn">+ Add FAQ</button>
                     </div>
 
                     {/* Why Choose Us Section */}
-                    <div className="form-section" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', borderRadius: '5px' }}>
-                        <h4 style={{ marginTop: 0 }}>Why Choose Us</h4>
+                    <div className="repeater-container">
+                        <h4 className="repeater-title">Why Choose Us</h4>
                         {formData.whyChooseUs.map((item, index) => (
-                            <div key={index} className="nested-form-item" style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px dashed #eee' }}>
-                                <MediaField
-                                    label="Icon"
-                                    value={item.icon}
-                                    onChange={(content) => {
-                                        const newItems = [...formData.whyChooseUs];
-                                        newItems[index].icon = content;
+                            <div key={index} className="repeater-item">
+                                <div className="nested-form-group">
+                                    <MediaField
+                                        label="Icon"
+                                        value={item.icon}
+                                        onChange={(content) => {
+                                            const newItems = [...formData.whyChooseUs];
+                                            newItems[index].icon = content;
+                                            setFormData({ ...formData, whyChooseUs: newItems });
+                                        }}
+                                    />
+                                </div>
+                                <div className="nested-form-group">
+                                    <input
+                                        type="text"
+                                        placeholder="Title"
+                                        value={item.title}
+                                        onChange={(e) => {
+                                            const newItems = [...formData.whyChooseUs];
+                                            newItems[index].title = e.target.value;
+                                            setFormData({ ...formData, whyChooseUs: newItems });
+                                        }}
+                                    />
+                                </div>
+                                <div className="nested-form-group">
+                                    <textarea
+                                        placeholder="Description"
+                                        value={item.description}
+                                        onChange={(e) => {
+                                            const newItems = [...formData.whyChooseUs];
+                                            newItems[index].description = e.target.value;
+                                            setFormData({ ...formData, whyChooseUs: newItems });
+                                        }}
+                                        style={{ minHeight: '80px' }}
+                                    />
+                                </div>
+                                <div className="repeater-actions">
+                                    <button type="button" onClick={() => {
+                                        const newItems = formData.whyChooseUs.filter((_, i) => i !== index);
                                         setFormData({ ...formData, whyChooseUs: newItems });
-                                    }}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Title"
-                                    value={item.title}
-                                    onChange={(e) => {
-                                        const newItems = [...formData.whyChooseUs];
-                                        newItems[index].title = e.target.value;
-                                        setFormData({ ...formData, whyChooseUs: newItems });
-                                    }}
-                                    style={{ width: '100%', marginTop: '5px' }}
-                                />
-                                <textarea
-                                    placeholder="Description"
-                                    value={item.description}
-                                    onChange={(e) => {
-                                        const newItems = [...formData.whyChooseUs];
-                                        newItems[index].description = e.target.value;
-                                        setFormData({ ...formData, whyChooseUs: newItems });
-                                    }}
-                                    style={{ width: '100%', minHeight: '60px', marginTop: '5px' }}
-                                />
-                                <button type="button" onClick={() => {
-                                    const newItems = formData.whyChooseUs.filter((_, i) => i !== index);
-                                    setFormData({ ...formData, whyChooseUs: newItems });
-                                }} className="btn btn-secondary" style={{ marginTop: '5px', backgroundColor: '#ff4444', borderColor: '#ff4444', color: 'white' }}>Remove Item</button>
+                                    }} className="repeater-remove-btn">Remove Item</button>
+                                </div>
                             </div>
                         ))}
                         <button type="button" onClick={() => setFormData({
                             ...formData,
                             whyChooseUs: [...formData.whyChooseUs, { title: '', description: '', icon: '' }]
-                        })} className="btn btn-secondary">+ Add 'Why Choose Us' Item</button>
+                        })} className="repeater-add-btn">+ Add 'Why Choose Us' Item</button>
                     </div>
 
                     {/* Expertise Section */}
-                    <div className="form-section" style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', borderRadius: '5px' }}>
-                        <h4 style={{ marginTop: 0 }}>Expertise</h4>
+                    <div className="repeater-container">
+                        <h4 className="repeater-title">Expertise</h4>
                         {formData.expertise.map((item, index) => (
-                            <div key={index} className="nested-form-item" style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px dashed #eee' }}>
-                                <MediaField
-                                    label="Icon"
-                                    value={item.icon}
-                                    onChange={(content) => {
-                                        const newItems = [...formData.expertise];
-                                        newItems[index].icon = content;
+                            <div key={index} className="repeater-item">
+                                <div className="nested-form-group">
+                                    <MediaField
+                                        label="Icon"
+                                        value={item.icon}
+                                        onChange={(content) => {
+                                            const newItems = [...formData.expertise];
+                                            newItems[index].icon = content;
+                                            setFormData({ ...formData, expertise: newItems });
+                                        }}
+                                    />
+                                </div>
+                                <div className="nested-form-group">
+                                    <input
+                                        type="text"
+                                        placeholder="Title"
+                                        value={item.title}
+                                        onChange={(e) => {
+                                            const newItems = [...formData.expertise];
+                                            newItems[index].title = e.target.value;
+                                            setFormData({ ...formData, expertise: newItems });
+                                        }}
+                                    />
+                                </div>
+                                <div className="nested-form-group">
+                                    <textarea
+                                        placeholder="Description"
+                                        value={item.description}
+                                        onChange={(e) => {
+                                            const newItems = [...formData.expertise];
+                                            newItems[index].description = e.target.value;
+                                            setFormData({ ...formData, expertise: newItems });
+                                        }}
+                                        style={{ minHeight: '80px' }}
+                                    />
+                                </div>
+                                <div className="repeater-actions">
+                                    <button type="button" onClick={() => {
+                                        const newItems = formData.expertise.filter((_, i) => i !== index);
                                         setFormData({ ...formData, expertise: newItems });
-                                    }}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="Title"
-                                    value={item.title}
-                                    onChange={(e) => {
-                                        const newItems = [...formData.expertise];
-                                        newItems[index].title = e.target.value;
-                                        setFormData({ ...formData, expertise: newItems });
-                                    }}
-                                    style={{ width: '100%', marginTop: '5px' }}
-                                />
-                                <textarea
-                                    placeholder="Description"
-                                    value={item.description}
-                                    onChange={(e) => {
-                                        const newItems = [...formData.expertise];
-                                        newItems[index].description = e.target.value;
-                                        setFormData({ ...formData, expertise: newItems });
-                                    }}
-                                    style={{ width: '100%', minHeight: '60px', marginTop: '5px' }}
-                                />
-                                <button type="button" onClick={() => {
-                                    const newItems = formData.expertise.filter((_, i) => i !== index);
-                                    setFormData({ ...formData, expertise: newItems });
-                                }} className="btn btn-secondary" style={{ marginTop: '5px', backgroundColor: '#ff4444', borderColor: '#ff4444', color: 'white' }}>Remove Item</button>
+                                    }} className="repeater-remove-btn">Remove Item</button>
+                                </div>
                             </div>
                         ))}
                         <button type="button" onClick={() => setFormData({
                             ...formData,
                             expertise: [...formData.expertise, { title: '', description: '', icon: '' }]
-                        })} className="btn btn-secondary">+ Add Expertise Item</button>
+                        })} className="repeater-add-btn">+ Add Expertise Item</button>
                     </div>
 
                     <div className="form-group">
@@ -449,12 +506,12 @@ const ServiceManager = () => {
                         </thead>
                         <tbody>
                             {services.map(service => (
-                                <tr key={service._id}>
+                                <tr key={service.id}>
                                     <td>{service.title}</td>
                                     <td className="admin-actions">
-                                        <button onClick={() => window.open(`/services/${service._id}`, '_blank')} className="btn-icon preview" style={{ marginRight: '5px', color: '#007bff' }}>Preview</button>
+                                        <button onClick={() => window.open(`/services/${service.slug || service.id}`, '_blank')} className="btn-icon preview" style={{ marginRight: '5px', color: '#007bff' }}>Preview</button>
                                         <button onClick={() => handleEdit(service)} className="btn-icon edit">Edit</button>
-                                        <button onClick={() => handleDelete(service._id)} className="btn-icon delete">Delete</button>
+                                        <button onClick={() => handleDelete(service.id)} className="btn-icon delete">Delete</button>
                                     </td>
                                 </tr>
                             ))}

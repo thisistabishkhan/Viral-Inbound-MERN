@@ -1,31 +1,31 @@
-const mongoose = require('mongoose');
+const prisma = require('./prismaClient');
+const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
-const User = require('./models/User');
 
 dotenv.config();
 
 const seedAdmin = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+        console.log('Checking for admin user...');
+
+        const adminExists = await prisma.user.findUnique({
+            where: { username: 'admin' }
         });
-
-        console.log('MongoDB connected');
-
-        const adminExists = await User.findOne({ username: 'admin' });
 
         if (adminExists) {
             console.log('Admin user already exists');
             process.exit();
         }
 
-        const admin = new User({
-            username: 'admin',
-            password: 'password123', // Change this in production
-        });
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash('password123', salt); // Change this in production
 
-        await admin.save();
+        const admin = await prisma.user.create({
+            data: {
+                username: 'admin',
+                password: password
+            }
+        });
 
         console.log('Admin user created successfully');
         process.exit();

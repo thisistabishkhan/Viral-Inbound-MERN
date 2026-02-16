@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const prisma = require('../prismaClient');
 const auth = require('../middleware/authMiddleware');
 
 // @route   POST api/auth/login
@@ -18,13 +18,16 @@ router.post('/login', async (req, res) => {
 
     try {
         // Check for existing user
-        const user = await User.findOne({ username });
+        const user = await prisma.user.findUnique({
+            where: { username }
+        });
+
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
 
         // Validate password
-        const isMatch = await user.comparePassword(password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -63,8 +66,16 @@ router.post('/login', async (req, res) => {
 // @access  Private
 router.get('/me', auth, async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('-password');
-        res.json(user);
+        const user = await prisma.user.findUnique({
+            where: { id: req.user.id }
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const { password, ...userWithoutPassword } = user;
+        res.json(userWithoutPassword);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

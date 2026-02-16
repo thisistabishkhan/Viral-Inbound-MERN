@@ -18,7 +18,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/blogs" element={<Blogs />} />
-                <Route path="/blogs/:id" element={<SingleBlog />} />
+                <Route path="/blogs/:slug" element={<SingleBlog />} />
                 <Route path="/login" element={<Login />} />
                 <Route
                     path="/admin"
@@ -29,7 +29,7 @@ function App() {
                     }
                 />
                 <Route path="/services" element={<Services />} />
-                <Route path="/services/:id" element={<SingleService />} />
+                <Route path="/services/:slug" element={<SingleService />} />
                 {/* <Route path="/portfolio" element={<Portfolio />} /> */}
             </Routes>
         </AuthProvider>

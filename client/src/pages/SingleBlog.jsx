@@ -6,16 +6,15 @@ import Footer from '../components/Footer';
 import ParticleBackground from '../components/ParticleBackground';
 
 const SingleBlog = () => {
-    const { id } = useParams();
+    const { slug } = useParams(); // Changed from id to slug
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getBlog = async () => {
             try {
-                // Using the specific endpoint for fetching by ID from routes/blogs.js
-                // Assuming GET /:id is implemented
-                const { data } = await axios.get(`/api/blogs/${id}`);
+                // The backend endpoint is now generic /:idOrSlug, so we just pass the slug
+                const { data } = await axios.get(`/api/blogs/${slug}`);
                 setBlog(data);
                 setLoading(false);
             } catch (error) {
@@ -25,7 +24,7 @@ const SingleBlog = () => {
         };
 
         getBlog();
-    }, [id]);
+    }, [slug]);
 
     if (loading) return (
         <>

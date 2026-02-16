@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const Portfolio = require('../models/Portfolio');
+const prisma = require('../prismaClient');
 
 // Get all portfolio items
 router.get('/', async (req, res) => {
     try {
-        const portfolio = await Portfolio.find();
+        const portfolio = await prisma.portfolio.findMany();
         res.json(portfolio);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -15,7 +15,9 @@ router.get('/', async (req, res) => {
 // Get one portfolio item
 router.get('/:id', async (req, res) => {
     try {
-        const item = await Portfolio.findById(req.params.id);
+        const item = await prisma.portfolio.findUnique({
+            where: { id: req.params.id }
+        });
         if (!item) return res.status(404).json({ message: 'Portfolio item not found' });
         res.json(item);
     } catch (err) {
@@ -25,9 +27,10 @@ router.get('/:id', async (req, res) => {
 
 // Create a portfolio item
 router.post('/', async (req, res) => {
-    const item = new Portfolio(req.body);
     try {
-        const newItem = await item.save();
+        const newItem = await prisma.portfolio.create({
+            data: req.body
+        });
         res.status(201).json(newItem);
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -37,7 +40,10 @@ router.post('/', async (req, res) => {
 // Update a portfolio item
 router.patch('/:id', async (req, res) => {
     try {
-        const updatedItem = await Portfolio.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedItem = await prisma.portfolio.update({
+            where: { id: req.params.id },
+            data: req.body
+        });
         res.json(updatedItem);
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -47,7 +53,9 @@ router.patch('/:id', async (req, res) => {
 // Delete a portfolio item
 router.delete('/:id', async (req, res) => {
     try {
-        await Portfolio.findByIdAndDelete(req.params.id);
+        await prisma.portfolio.delete({
+            where: { id: req.params.id }
+        });
         res.json({ message: 'Portfolio item deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });

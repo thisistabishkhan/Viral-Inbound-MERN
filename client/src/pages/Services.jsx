@@ -43,7 +43,7 @@ const Services = () => {
                         ) : (
                             <div className="services-grid">
                                 {services.map((service) => (
-                                    <article key={service._id} className="service-card">
+                                    <article key={service.id} className="service-card">
                                         <div className="service-icon">
                                             {service.icon && service.icon.trim().startsWith('<svg') ? (
                                                 <div dangerouslySetInnerHTML={{ __html: service.icon }} />
@@ -54,7 +54,17 @@ const Services = () => {
                                         <div className="service-content">
                                             <h3>{service.title}</h3>
                                             <p>{service.description.substring(0, 150)}...</p>
-                                            <Link to={`/services/${service._id}`} className="service-link">Learn More →</Link>
+                                            <Link
+                                                to={`/services/${service.slug || service.id}`}
+                                                className="service-link"
+                                                onClick={() => {
+                                                    if (!service.slug) {
+                                                        console.warn(`Service "${service.title}" is missing a slug, using ID instead`);
+                                                    }
+                                                }}
+                                            >
+                                                Learn More →
+                                            </Link>
                                         </div>
                                     </article>
                                 ))}

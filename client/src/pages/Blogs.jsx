@@ -43,7 +43,7 @@ const Blogs = () => {
                         ) : (
                             <div className="blogs-grid">
                                 {blogs.map((blog) => (
-                                    <article key={blog._id} className="insight-card">
+                                    <article key={blog.id} className="insight-card">
                                         {blog.imageUrl && (
                                             <div className="insight-image">
                                                 <img src={blog.imageUrl} alt={blog.title} />
@@ -54,8 +54,8 @@ const Blogs = () => {
                                                 <span className="insight-category">{blog.tags[0]}</span>
                                             )}
                                             <h3>{blog.title}</h3>
-                                            <p>{blog.content.replace(/<[^>]+>/g, '').substring(0, 150)}...</p>
-                                            <Link to={`/blogs/${blog._id}`} className="insight-link">Read More →</Link>
+                                            <div className="blog-excerpt" dangerouslySetInnerHTML={{ __html: blog.content.substring(0, 150) + '...' }} />
+                                            <Link to={`/blogs/${blog.slug || blog.id}`} className="insight-link">Read More →</Link>
                                         </div>
                                     </article>
                                 ))}

@@ -587,6 +587,7 @@ header.header.scrolled {
 
 .hero-text {
     text-align: left;
+    margin: auto;
 }
 
 .hero-title {
@@ -3207,6 +3208,24 @@ section {
     padding-bottom: var(--spacing-xl);
 }
 
+.admin-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-header-container .page-title {
+    margin-bottom: 0;
+}
+
+.logout-btn {
+    background-color: #000000;
+    /* Red color for logout */
+    border-color: #000000;
+}
+
+
 .admin-tabs {
     display: flex;
     gap: var(--spacing-sm);
@@ -3286,9 +3305,14 @@ section {
 }
 
 .btn-icon.delete {
-    background-color: #fef2f2;
-    color: #ef4444;
-    border-color: #fecaca;
+    background-color: #ffffff;
+    color: #000000;
+    border-color: #000000;
+}
+
+.btn-icon.delete:hover {
+    background-color: #000000;
+    color: #ffffff;
 }
 
 .admin-table-wrapper {
@@ -3331,6 +3355,131 @@ section {
     border-radius: var(--radius-md);
     margin-bottom: var(--spacing-md);
     border: 1px solid #fecaca;
+}
+
+/* Repeater Fields for Admin Forms */
+.repeater-container {
+    border: 1px solid var(--border);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+}
+
+.repeater-title {
+    margin-top: 0;
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-xs);
+}
+
+.repeater-item {
+    background-color: #ffffff;
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: box-shadow 0.2s ease;
+}
+
+.repeater-item:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border);
+}
+
+/* Fix for repeater inputs to match main form */
+.repeater-item input[type="text"],
+.repeater-item textarea,
+.repeater-item select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.repeater-item input[type="text"]:focus,
+.repeater-item textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.06);
+    background-color: #ffffff;
+}
+
+.repeater-row {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: flex-start;
+}
+
+.repeater-actions {
+    margin-top: var(--spacing-sm);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Black and White Remove Button */
+.repeater-remove-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 0.5rem 1rem;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.repeater-remove-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.repeater-add-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #000000;
+    border: 1px solid #000000;
+    color: #ffffff;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: var(--spacing-sm);
+}
+
+.repeater-add-btn:hover {
+    background-color: #333333;
+    border-color: #333333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nested-form-group {
+    margin-bottom: var(--spacing-sm);
+}
+
+.nested-form-group:last-child {
+    margin-bottom: 0;
 }
 
 /* ============================================
@@ -3546,9 +3695,7 @@ section {
    Single Service Page Styles
    ============================================ */
 
-.single-service-page {
-    /* Base styles if needed */
-}
+
 
 /* Service About Section */
 .service-about {

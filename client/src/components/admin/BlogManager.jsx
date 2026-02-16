@@ -84,7 +84,7 @@ const BlogManager = () => {
 
     const handleEdit = (blog) => {
         setIsEditing(true);
-        setCurrentId(blog._id);
+        setCurrentId(blog.id);
         setFormData({
             title: blog.title,
             author: blog.author || '',
@@ -204,14 +204,14 @@ const BlogManager = () => {
                         </thead>
                         <tbody>
                             {blogs.map(blog => (
-                                <tr key={blog._id}>
+                                <tr key={blog.id}>
                                     <td>{blog.title}</td>
                                     <td>{blog.author}</td>
                                     <td>{new Date(blog.date).toLocaleDateString()}</td>
                                     <td className="admin-actions">
-                                        <button onClick={() => window.open(`/blogs/${blog._id}`, '_blank')} className="btn-icon preview" style={{ marginRight: '5px', color: '#007bff' }}>Preview</button>
+                                        <button onClick={() => window.open(`/blogs/${blog.slug || blog.id}`, '_blank')} className="btn-icon preview" style={{ marginRight: '5px', color: '#007bff' }}>Preview</button>
                                         <button onClick={() => handleEdit(blog)} className="btn-icon edit">Edit</button>
-                                        <button onClick={() => handleDelete(blog._id)} className="btn-icon delete">Delete</button>
+                                        <button onClick={() => handleDelete(blog.id)} className="btn-icon delete">Delete</button>
                                     </td>
                                 </tr>
                             ))}

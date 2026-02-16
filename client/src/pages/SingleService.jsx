@@ -9,7 +9,7 @@ import WhyChoose from '../components/WhyChoose';
 import Expertise from '../components/Expertise';
 import FAQ from '../components/FAQ';
 import ClientLogos from '../components/ClientLogos';
-import Projects from '../components/Projects';
+
 import useFormSubmit from '../hooks/useFormSubmit';
 
 const ServiceContactForm = () => {
@@ -63,14 +63,14 @@ const ServiceContactForm = () => {
 };
 
 const SingleService = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getService = async () => {
             try {
-                const { data } = await fetchService(id);
+                const { data } = await fetchService(slug);
                 setService(data);
                 setLoading(false);
             } catch (error) {
@@ -80,7 +80,7 @@ const SingleService = () => {
         };
 
         getService();
-    }, [id]);
+    }, [slug]);
 
     if (loading) return (
         <>
@@ -127,15 +127,7 @@ const SingleService = () => {
                             <h1 className="hero-title">{service.title}</h1>
                             <p className="hero-supporting">{service.description}</p>
 
-                            <div className="hero-badges" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                                {/* Placeholders for badges like 'Rated 5 Stars', 'Certified', etc. */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.875rem' }}>
-                                    <span style={{ color: '#FFD700' }}>★★★★★</span> 5.0/5 Rating
-                                </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.875rem' }}>
-                                    <span>✓</span> Verified Experts
-                                </div>
-                            </div>
+
                         </div>
                         <div className="hero-form-wrapper">
                             <ServiceContactForm />
@@ -151,7 +143,13 @@ const SingleService = () => {
                     <div className="container">
                         <div className="service-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
                             <div className="service-about-media">
-                                {service.icon && service.icon.trim().startsWith('<svg') ? (
+                                {service.detailImage ? (
+                                    <img
+                                        src={service.detailImage}
+                                        alt={service.title}
+                                        style={{ width: '100%', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                                    />
+                                ) : service.icon && service.icon.trim().startsWith('<svg') ? (
                                     <div dangerouslySetInnerHTML={{ __html: service.icon }} style={{ width: '100%', height: 'auto', maxHeight: '400px' }} />
                                 ) : (
                                     <img
@@ -186,8 +184,7 @@ const SingleService = () => {
                 {/* Why Choose Us */}
                 <WhyChoose items={service.whyChooseUs && service.whyChooseUs.length > 0 ? service.whyChooseUs : undefined} />
 
-                {/* Success Stories / Projects */}
-                <Projects />
+
 
                 {/* Expertise / What We Do */}
                 <Expertise

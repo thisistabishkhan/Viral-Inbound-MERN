@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+const { PrismaClient } = require('@prisma/client');
 const dotenv = require('dotenv');
-const Blog = require('./models/Blog');
 
 dotenv.config();
+
+const prisma = new PrismaClient();
 
 const sampleBlogs = [
     {
@@ -33,22 +34,26 @@ const sampleBlogs = [
 
 const seedDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/viral-inbound');
-        console.log('Connected to MongoDB');
+        console.log('Seeding database via Prisma...');
 
         // Clear existing blogs
-        await Blog.deleteMany({});
+        await prisma.blog.deleteMany({});
         console.log('Cleared existing blogs');
 
         // Insert new blogs
-        await Blog.insertMany(sampleBlogs);
+        // createMany is supported in PostgreSQL
+        await prisma.blog.createMany({
+            data: sampleBlogs,
+            skipDuplicates: true // Optional: skip if slug collision
+        });
+
         console.log('Sample blogs inserted successfully');
 
-        mongoose.connection.close();
-        console.log('Database connection closed');
     } catch (err) {
         console.error('Error seeding database:', err);
         process.exit(1);
+    } finally {
+        await prisma.$disconnect();
     }
 };
 

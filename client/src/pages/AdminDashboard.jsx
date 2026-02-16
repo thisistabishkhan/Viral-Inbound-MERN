@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ParticleBackground from '../components/ParticleBackground';
@@ -7,6 +9,13 @@ import ServiceManager from '../components/admin/ServiceManager';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('blogs');
+    const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
 
     return (
         <>
@@ -14,7 +23,12 @@ const AdminDashboard = () => {
             <Header />
             <main className="admin-page">
                 <div className="container">
-                    <h1 className="page-title">Admin Dashboard</h1>
+                    <div className="admin-header-container">
+                        <h1 className="page-title">Admin Dashboard</h1>
+                        <button className="btn btn-primary logout-btn" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </div>
 
                     <div className="admin-tabs">
                         <button

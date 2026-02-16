@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String?  @unique
+  description     String
+  icon            String?
+  detailImage     String?
+  platforms       String[]
+  items           Json?    // Array of objects
+  subHeading      String?
+  longDescription String?
+  stats           Json?    // Array of objects
+  whyChooseUs     Json?    // Array of objects
+  expertise       Json?    // Array of objects
+  faqs            Json?    // Array of objects
+  ctaText         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  imageUrl  String?
+  author    String?
+  date      DateTime @default(now())
+  tags      String[]
+  slug      String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id          String   @id @default(uuid())
+  title       String
+  client      String?
+  category    String?
+  imageUrl    String
+  description String?
+  link        String?
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

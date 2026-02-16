@@ -1,26 +1,32 @@
-const mongoose = require('mongoose');
-const User = require('./models/User');
-require('dotenv').config();
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const prisma = new PrismaClient();
 
 const verifyAdmin = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('Connected to MongoDB');
+        console.log('Checking admin user via Prisma...');
 
-        const user = await User.findOne({ username: 'admin' });
+        const user = await prisma.user.findUnique({
+            where: { username: 'admin' }
+        });
+
         if (!user) {
             console.log('Admin user NOT found');
         } else {
             console.log('Admin user found:', user.username);
             console.log('Hashed password:', user.password);
 
-            const isMatch = await user.comparePassword('password123');
+            const isMatch = await bcrypt.compare('password123', user.password);
             console.log('Password match result:', isMatch);
         }
-        process.exit();
     } catch (error) {
         console.error('Error:', error);
-        process.exit(1);
+    } finally {
+        await prisma.$disconnect();
     }
 };
 

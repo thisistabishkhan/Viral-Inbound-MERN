@@ -15,6 +15,7 @@ app.use('/api/portfolio', require('./routes/portfolio'));
 app.use('/api/blogs', require('./routes/blogs'));
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/testimonials', require('./routes/testimonials'));
 
 app.get('/', (req, res) => {
     res.send('Viral Inbound API is running');

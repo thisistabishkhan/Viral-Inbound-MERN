@@ -40,7 +40,6 @@ const getAccessToken = async () => {
 router.post('/', async (req, res) => {
     try {
         const userData = req.body;
-        console.log('Received Lead Data:', userData);
 
         // 1. Get Access Token
         const accessToken = await getAccessToken();
@@ -93,7 +92,23 @@ router.post('/', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Zoho Submission Error:', error.response ? error.response.data : error.message);
+        // Handle Zoho specific errors
+        if (error.response && error.response.data && error.response.data.data) {
+            const zohoError = error.response.data.data[0];
+
+            // Handle Duplicate Data (Email already exists)
+            if (zohoError.code === 'DUPLICATE_DATA') {
+                console.log('Zoho Duplicate Lead Detected:', userData.email);
+                return res.status(200).json({
+                    success: true,
+                    message: "Thank you! We've received your request.",
+                    isDuplicate: true
+                });
+            }
+        }
+
+        console.error('Zoho Submission Error:', error.response ? JSON.stringify(error.response.data) : error.message);
+
         res.status(500).json({
             success: false,
             message: 'Failed to submit lead to Zoho',

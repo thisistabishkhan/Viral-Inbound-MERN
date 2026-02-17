@@ -7,6 +7,8 @@ import ParticleBackground from '../components/ParticleBackground';
 import BlogManager from '../components/admin/BlogManager';
 import ServiceManager from '../components/admin/ServiceManager';
 import PortfolioManager from '../components/admin/PortfolioManager';
+import TestimonialManager from '../components/admin/TestimonialManager';
+
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('blogs');
@@ -50,12 +52,21 @@ const AdminDashboard = () => {
                         >
                             Services
                         </button>
+                        <button
+                            className={`admin-tab ${activeTab === 'testimonials' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('testimonials')}
+                        >
+                            Testimonials
+                        </button>
+
                     </div>
 
                     <div className="admin-content">
                         {activeTab === 'blogs' && <BlogManager />}
                         {activeTab === 'portfolio' && <PortfolioManager />}
                         {activeTab === 'services' && <ServiceManager />}
+                        {activeTab === 'testimonials' && <TestimonialManager />}
+
                     </div>
                 </div>
             </main>

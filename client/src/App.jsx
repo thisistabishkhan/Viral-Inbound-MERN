@@ -7,10 +7,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import Login from './pages/Login';
 import Services from './pages/Services';
 import SingleService from './pages/SingleService';
+import Portfolio from './pages/Portfolio';
+import SinglePortfolio from './pages/SinglePortfolio';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
-// import Services from './pages/Services';
-// import Portfolio from './pages/Portfolio';
 
 function App() {
     return (
@@ -30,7 +30,8 @@ function App() {
                 />
                 <Route path="/services" element={<Services />} />
                 <Route path="/services/:slug" element={<SingleService />} />
-                {/* <Route path="/portfolio" element={<Portfolio />} /> */}
+                <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/portfolio/:slug" element={<SinglePortfolio />} />
             </Routes>
         </AuthProvider>
     );

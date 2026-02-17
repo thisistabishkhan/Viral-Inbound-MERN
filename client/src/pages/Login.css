@@ -1,16 +1,17 @@
 /* Login Page Styles - Light Theme */
 .login-container {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     height: 100vh;
-    /* Fixed height instead of min-height to prevent growth */
-    width: 100vw;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Ensure nothing inside scrolls */
     background-color: #ffffff;
-    /* White background */
 }
 
 /* Subtle Gradients for Light Mode */
@@ -41,8 +42,10 @@
     position: relative;
     width: 100%;
     max-width: 28rem;
+    max-height: calc(100vh - 6rem);
     padding: 2rem;
     z-index: 10;
+    overflow-y: auto;
 }
 
 .login-glass-card {
@@ -221,10 +224,12 @@
 }
 
 .login-footer {
-    position: absolute;
+    position: fixed;
     bottom: 1.5rem;
-    width: 100%;
+    left: 0;
+    right: 0;
     text-align: center;
     color: #a1a1aa;
     font-size: 0.75rem;
+    z-index: 5;
 }

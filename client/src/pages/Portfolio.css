@@ -1,0 +1,141 @@
+/* Portfolio Listing Page */
+.portfolio-page {
+    min-height: 100vh;
+}
+
+.portfolio-page .page-header {
+    margin-bottom: 80px;
+    padding-top: 40px;
+}
+
+.portfolio-page .page-title {
+    text-align: left;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: #000;
+    letter-spacing: -0.03em;
+}
+
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.portfolio-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.portfolio-card-image {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+}
+
+.portfolio-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .portfolio-card-image img {
+    transform: scale(1.05);
+}
+
+.portfolio-card-content {
+    padding: 30px;
+    background: #fff;
+}
+
+.portfolio-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #000;
+    line-height: 1.4;
+}
+
+.portfolio-card-link {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #000;
+    transition: transform 0.2s ease;
+}
+
+.portfolio-card:hover .portfolio-card-link {
+    transform: translateX(5px);
+}
+
+.no-items {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.125rem;
+    padding: 60px 0;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 60px 0;
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .portfolio-page {
+        padding: 100px 0 60px;
+    }
+
+    .portfolio-page .page-header {
+        margin-bottom: 40px;
+        padding-top: 20px;
+    }
+
+    .portfolio-page .page-title {
+        font-size: 3rem;
+        margin-bottom: 0;
+    }
+
+    .portfolio-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .portfolio-card-image {
+        height: 350px;
+    }
+
+    .portfolio-card-title {
+        font-size: 1.5rem;
+    }
+
+    .portfolio-card-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .portfolio-card-overlay {
+        padding: 30px;
+    }
+}

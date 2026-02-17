@@ -16,6 +16,7 @@ export const deleteService = (id) => API.delete(`/services/${id}`);
 
 // Portfolio
 export const fetchPortfolio = () => API.get('/portfolio');
+export const fetchPortfolioItem = (identifier) => API.get(`/portfolio/${identifier}`);
 export const createPortfolioItem = (newItem) => API.post('/portfolio', newItem);
 export const updatePortfolioItem = (id, updatedItem) => API.patch(`/portfolio/${id}`, updatedItem);
 export const deletePortfolioItem = (id) => API.delete(`/portfolio/${id}`);

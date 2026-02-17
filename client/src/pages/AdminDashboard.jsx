@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import ParticleBackground from '../components/ParticleBackground';
 import BlogManager from '../components/admin/BlogManager';
 import ServiceManager from '../components/admin/ServiceManager';
+import PortfolioManager from '../components/admin/PortfolioManager';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('blogs');
@@ -40,10 +41,8 @@ const AdminDashboard = () => {
                         <button
                             className={`admin-tab ${activeTab === 'portfolio' ? 'active' : ''}`}
                             onClick={() => setActiveTab('portfolio')}
-                            disabled
-                            title="Coming Soon"
                         >
-                            Portfolio (Coming Soon)
+                            Portfolio
                         </button>
                         <button
                             className={`admin-tab ${activeTab === 'services' ? 'active' : ''}`}
@@ -55,6 +54,7 @@ const AdminDashboard = () => {
 
                     <div className="admin-content">
                         {activeTab === 'blogs' && <BlogManager />}
+                        {activeTab === 'portfolio' && <PortfolioManager />}
                         {activeTab === 'services' && <ServiceManager />}
                     </div>
                 </div>

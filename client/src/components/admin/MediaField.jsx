@@ -58,9 +58,9 @@ const MediaField = ({ value, onChange, label }) => {
             }}>
                 {preview ? (
                     isSvg(preview) ? (
-                        <div dangerouslySetInnerHTML={{ __html: preview }} style={{ maxWidth: '100px', maxHeight: '100px' }} />
+                        <div dangerouslySetInnerHTML={{ __html: preview }} className="preview-svg-wrapper" />
                     ) : (
-                        <img src={preview} alt="Preview" style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }} />
+                        <img src={preview} alt="Preview" className="preview-image" style={{ maxWidth: '100%', maxHeight: '250px', objectFit: 'contain' }} />
                     )
                 ) : (
                     <span style={{ color: '#94a3b8' }}>No media selected</span>

@@ -54,12 +54,16 @@ model Blog {
 model Portfolio {
   id          String   @id @default(uuid())
   title       String
+  slug        String?  @unique
   client      String?
   category    String?
+  subtitle    String?
   imageUrl    String
   description String?
   link        String?
   featured    Boolean  @default(false)
+  gallery     Json?
+  projectInfo Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

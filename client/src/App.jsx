@@ -9,6 +9,7 @@ import Services from './pages/Services';
 import SingleService from './pages/SingleService';
 import Portfolio from './pages/Portfolio';
 import SinglePortfolio from './pages/SinglePortfolio';
+import Contact from './pages/Contact';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/services/:slug" element={<SingleService />} />
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/portfolio/:slug" element={<SinglePortfolio />} />
+                <Route path="/contact" element={<Contact />} />
             </Routes>
         </AuthProvider>
     );

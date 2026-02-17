@@ -1,0 +1,132 @@
+/* ============================================
+   Contact Page Styles
+   ============================================ */
+
+.contact-page {
+    display: flex;
+    min-height: calc(100vh - 44px - 70px);
+    /* Account for top-bar and header */
+    background: #fff;
+}
+
+.contact-left {
+    flex: 1;
+    background-color: #000;
+    color: #fff;
+    padding: var(--spacing-xl) 8%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.contact-left-content {
+    max-width: 650px;
+    width: 100%;
+}
+
+.contact-left h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+.contact-left .contact-subtitle {
+    font-size: var(--font-size-lg);
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.6;
+}
+
+.contact-info-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.contact-info-label {
+    text-transform: uppercase;
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: var(--spacing-xs);
+    display: block;
+    font-weight: 600;
+}
+
+.contact-info-value {
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    color: #fff;
+    display: block;
+    text-decoration: none;
+}
+
+.contact-info-value.address {
+    font-size: var(--font-size-lg);
+    line-height: 1.5;
+}
+
+.contact-address-item {
+    margin-bottom: var(--spacing-sm);
+}
+
+.contact-right {
+    flex: 1;
+    padding: var(--spacing-xl) 8%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.contact-right-content {
+    max-width: 650px;
+    width: 100%;
+}
+
+.contact-right h2.contact-right-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    color: #000;
+    letter-spacing: -0.02em;
+}
+
+.contact-form-container {
+    width: 100%;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+    .contact-page {
+        flex-direction: column;
+    }
+
+    .contact-left,
+    .contact-right {
+        align-items: flex-start;
+        text-align: left;
+        padding: var(--spacing-lg) 8%;
+    }
+
+    .contact-left-content,
+    .contact-right-content {
+        max-width: 100%;
+    }
+
+    .contact-info-value {
+        font-size: var(--font-size-lg);
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-left h1 {
+        font-size: 2.5rem;
+    }
+
+    .contact-right h2.contact-right-title {
+        font-size: 2.2rem;
+    }
+}

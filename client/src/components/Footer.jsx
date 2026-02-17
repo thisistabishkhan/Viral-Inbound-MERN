@@ -57,7 +57,7 @@ const Footer = () => {
                                 <li><a href="#process">Process</a></li>
                                 <li><a href="#testimonials">Testimonials</a></li>
                                 <li><a href="#careers">Careers</a></li>
-                                <li><a href="#contact">Contact Us</a></li>
+                                <li><Link to="/contact">Contact Us</Link></li>
                                 <li><a href="#faq">FAQ's</a></li>
                                 <li><a href="#life">Life @ Viral Inbound</a></li>
                                 <li><a href="#viral-log">Viral Log</a></li>

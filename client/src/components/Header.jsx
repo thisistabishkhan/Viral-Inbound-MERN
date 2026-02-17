@@ -80,7 +80,7 @@ const Header = () => {
                         <li><a href="/portfolio">Projects</a></li>
                         <li><Link to="/blogs">Insights</Link></li>
                         <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
+                        <li><Link to="/contact">Contact</Link></li>
                         <li className="mobile-cta-wrapper" style={{ display: 'none' }}><a href="https://cal.com/viralinbound" className="mobile-cta" target="_blank" rel="noopener noreferrer">Book a Strategy Call</a></li>
                         <li className="mobile-social-wrapper" style={{ display: 'none' }}>
                             <div className="mobile-social-icons">
